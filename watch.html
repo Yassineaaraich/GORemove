@@ -94,7 +94,14 @@
           // رابط مدعوم: أعرض فيديو مباشر
           const box = document.createElement('div');
           box.className = 'server-box';
-          box.innerHTML = `<video src="${m.server_2}" controls autoplay></video>`;
+          box.innerHTML = `
+            <video 
+              src="${m.server_2}" 
+              controls 
+              playsinline 
+              controlsList="nodownload" 
+              style="width:100%;max-width:800px;border-radius:10px;background:#000"
+            ></video>`;
           serversWrap.appendChild(box);
         } else {
           // رابط غير مدعوم (intent://)
@@ -104,7 +111,11 @@
           serversWrap.appendChild(box);
         }
       } else {
-        serversWrap.innerHTML += `<div class="muted">لا يوجد سيرفر</div>`;
+        // لا يوجد أي سيرفر
+        const box = document.createElement('div');
+        box.className = 'server-box muted';
+        box.textContent = "لا يوجد فيديو متاح لهذا الفيلم.";
+        serversWrap.appendChild(box);
       }
 
       const actions = document.createElement('div');
