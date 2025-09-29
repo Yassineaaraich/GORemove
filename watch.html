@@ -15,15 +15,16 @@
       padding:14px;border-bottom:1px solid rgba(255,255,255,0.1);
       background:rgba(0,0,0,0.3);backdrop-filter:blur(6px);
     }
-    .logo{width:44px;height:44px;border-radius:10px;background:linear-gradient(135deg,#6B9EFF,#9ACDFF);display:flex;align-items:center;justify-content:center;font-weight:700;color:#071426}
+    .logo{width:44px;height:44px;border-radius:10px;background:linear-gradient(135deg,#ff6b6b,#ff9a9a);display:flex;align-items:center;justify-content:center;font-weight:700;color:#071426}
     main{padding:20px;max-width:900px;margin:0 auto;}
     .poster{width:100%;max-width:300px;aspect-ratio:2/3;object-fit:cover;border-radius:10px}
     .details{display:flex;flex-direction:column;gap:12px;margin-top:20px}
     .title{font-size:24px;font-weight:700}
     .muted{color:#98a0b3}
     .badge{background:rgba(255,255,255,0.08);padding:4px 8px;border-radius:8px;font-size:13px;margin-inline-end:6px}
-    .servers{display:flex;gap:8px;margin-top:12px;flex-wrap:wrap}
-    .server-btn{padding:8px 12px;border-radius:10px;background:rgba(255,255,255,0.1);border:0;cursor:pointer;color:#fff;text-decoration:none}
+    .servers{margin-top:16px}
+    .server-box{margin-top:12px;padding:10px;background:rgba(255,255,255,0.05);border-radius:10px}
+    video{width:100%;max-width:800px;border-radius:10px;background:#000}
     .actions{display:flex;gap:10px;margin-top:16px}
     .actions button{padding:10px 14px;border-radius:8px;border:0;cursor:pointer;font-weight:700}
     .fav{background:#ff6b6b;color:#fff}
@@ -34,10 +35,10 @@
 <body>
   <header>
     <div style="display:flex;align-items:center;gap:10px">
-      <img src="BN.jpg" class="logo"></img>
-      <strong>BOOM NOUR<strong>
+      <div class="logo">ف</div>
+      <strong>تطبيق الأفلام</strong>
     </div>
-    <a href="index.html" style="color:#000000;text-decoration:none" class="logo">right</a>
+    <a href="index.html" style="color:#98a0b3;text-decoration:none">⟵ رجوع</a>
   </header>
 
   <main id="content">
@@ -81,11 +82,30 @@
           <div>⭐ التقييم: <strong>${m.rating || 'N/A'}</strong></div>
           <div class="muted">المشاهدات: ${m.views||0}</div>
           <div class="muted">الجودة: ${m.quality||''}</div>
-          <div class="servers">
-            ${m.server_2 ? `<a class="server-btn" href="${m.server_2}" target="_blank">سيرفر المشاهدة</a>` : '<span class="muted">لا يوجد سيرفر</span>'}
-          </div>
         </div>
       `;
+
+      const serversWrap = document.createElement('div');
+      serversWrap.className = 'servers';
+      serversWrap.innerHTML = `<h3>سيرفر المشاهدة</h3>`;
+
+      if(m.server_2){
+        if(m.server_2.startsWith("http")){
+          // رابط مدعوم: أعرض فيديو مباشر
+          const box = document.createElement('div');
+          box.className = 'server-box';
+          box.innerHTML = `<video src="${m.server_2}" controls autoplay></video>`;
+          serversWrap.appendChild(box);
+        } else {
+          // رابط غير مدعوم (intent://)
+          const box = document.createElement('div');
+          box.className = 'server-box muted';
+          box.textContent = "الرابط غير مدعوم في المتصفح (intent://)";
+          serversWrap.appendChild(box);
+        }
+      } else {
+        serversWrap.innerHTML += `<div class="muted">لا يوجد سيرفر</div>`;
+      }
 
       const actions = document.createElement('div');
       actions.className = 'actions';
@@ -114,6 +134,8 @@
 
       actions.appendChild(fav);
       actions.appendChild(save);
+
+      c.appendChild(serversWrap);
       c.appendChild(actions);
     }
 
